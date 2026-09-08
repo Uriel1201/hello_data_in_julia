@@ -2,11 +2,29 @@
 
 julia_version = "1.12.6"
 manifest_format = "2.0"
-project_hash = "ef9ef146c8986628bb496591e73128d03b94854c"
+project_hash = "ac63e75a183632c4ded1706268003d6456b90eba"
 
 [[deps.Artifacts]]
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
 version = "1.11.0"
+
+[[deps.Base64]]
+uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
+version = "1.11.0"
+
+[[deps.CommonMark]]
+deps = ["PrecompileTools"]
+git-tree-sha1 = "7c8fe02c7eb6fe22e89d3990123a2a931ca8fcfb"
+uuid = "a80b9123-70ca-4bc0-993e-6e3bcb318db6"
+version = "1.0.4"
+
+    [deps.CommonMark.extensions]
+    CommonMarkMarkdownASTExt = "MarkdownAST"
+    CommonMarkMarkdownExt = "Markdown"
+
+    [deps.CommonMark.weakdeps]
+    Markdown = "d6f4376e-aef5-505a-96c1-9c027394607a"
+    MarkdownAST = "d0879d2d-cac2-40c8-9cee-1863dc0c7391"
 
 [[deps.DBInterface]]
 git-tree-sha1 = "265d7f87f329c063cbde41920f9d00713a43cedd"
@@ -34,6 +52,11 @@ git-tree-sha1 = "92e88cb68a5b10545234f46dfaeb2fa8a8a50c45"
 uuid = "4dc1fcf4-5e3b-5448-94ab-0c38ec0385c1"
 version = "1.0.0"
 
+[[deps.Glob]]
+git-tree-sha1 = "246c628cec062230b7d183aab88841fa94fcabe9"
+uuid = "c27321d9-0574-5035-807b-f59d2c89b15c"
+version = "1.5.0"
+
 [[deps.InlineStrings]]
 git-tree-sha1 = "06b65886c7577a3784d616e29f1302c2e36e389d"
 uuid = "842dd82b-1e85-43dc-bf29-5d0ee9dffc48"
@@ -47,6 +70,11 @@ version = "1.4.6"
     ArrowTypes = "31f734f8-188a-4ce0-8406-c8a06bd891cd"
     Parsers = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
 
+[[deps.InteractiveUtils]]
+deps = ["Markdown"]
+uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+version = "1.11.0"
+
 [[deps.IteratorInterfaceExtensions]]
 git-tree-sha1 = "a3f24677c21f5bbe9d2a714f95dcd58337fb2856"
 uuid = "82899510-4779-5014-852e-03e436cf321d"
@@ -58,8 +86,33 @@ git-tree-sha1 = "7204148362dafe5fe6a273f855b8ccbe4df8173e"
 uuid = "692b3bcd-3c85-4b1f-b108-f13ce0eb3210"
 version = "1.8.0"
 
+[[deps.JuliaFormatter]]
+deps = ["CommonMark", "Glob", "JuliaSyntax", "PrecompileTools", "TOML", "Test"]
+git-tree-sha1 = "4a25454bfd37ad800d20017fe59243e41163fed9"
+uuid = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
+version = "2.14.0"
+
+[[deps.JuliaSyntax]]
+git-tree-sha1 = "0d4b3dab95018bcf3925204475693d9f09dc45b8"
+uuid = "70703baa-626e-46a2-a12c-08ffd08c73b4"
+version = "1.0.2"
+
+[[deps.JuliaSyntaxHighlighting]]
+deps = ["StyledStrings"]
+uuid = "ac6e5ff7-fb65-4e79-a425-ec3bc9c03011"
+version = "1.12.0"
+
 [[deps.Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
+version = "1.11.0"
+
+[[deps.Logging]]
+uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
+version = "1.11.0"
+
+[[deps.Markdown]]
+deps = ["Base64", "JuliaSyntaxHighlighting", "StyledStrings"]
+uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 version = "1.11.0"
 
 [[deps.OrderedCollections]]
@@ -115,6 +168,10 @@ version = "3.53.2+0"
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 version = "1.11.0"
 
+[[deps.StyledStrings]]
+uuid = "f489334b-da3d-4c2e-b8f0-e476e12c162b"
+version = "1.11.0"
+
 [[deps.TOML]]
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
@@ -131,6 +188,11 @@ deps = ["DataAPI", "DataValueInterfaces", "IteratorInterfaceExtensions", "Ordere
 git-tree-sha1 = "a94d9bdda1b7bed0046cea645639ab3f62196fac"
 uuid = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
 version = "1.14.0"
+
+[[deps.Test]]
+deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
+uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+version = "1.11.0"
 
 [[deps.UUIDs]]
 deps = ["Random", "SHA"]
@@ -159,7 +221,7 @@ uuid = "c4b69c83-5512-53e3-94e6-de98773c479f"
 version = "1.4.2+0"
 
 [[deps.hello_data_in_julia]]
-deps = ["SQLite"]
+deps = ["DotEnv", "SQLite"]
 path = "."
 uuid = "56430cd4-5d74-40e3-afde-876237f06769"
 version = "0.1.0"
