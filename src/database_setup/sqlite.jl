@@ -24,7 +24,12 @@ end
 """
     sqlite_ti_arrow(conn::SQLite.DB, query::String, output_file::String, chunk_size::Int64)
 """
-function sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String, chunk_size::Int64)::Nothing
+function sqlite_to_arrow(
+    conn::SQLite.DB,
+    query::String,
+    output_file::String,
+    chunk_size::Int64,
+)::Nothing
     file_path = joinpath("data/arrow", "$output_file.arrow")
     result = DBInterface.execute(conn, query)
     open(Arrow.Writer, file_path) do writer
@@ -32,4 +37,5 @@ function sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String, ch
             Arrow.write(writer, collect(chunk))
         end
     end
-endend # module MySQLite
+end
+end # module MySQLite
