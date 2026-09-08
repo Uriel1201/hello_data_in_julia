@@ -1,6 +1,9 @@
 module MySQLite
 using SQLite
 
+"""
+    get_conn(dbs::String = ":memory:", mode::String = "default") -> SQLite.DB
+"""
 function get_conn(dbs::String = ":memory:", mode::String = "default")::SQLite.DB
     if dbs == ":memory:"
         return SQLite.DB()
