@@ -1,6 +1,6 @@
 using Test
 include("../src/database_setup/sqlite.jl")
-using .MySQLite, DBInterface
+using .MySQLite, DBInterface, SQLite
 
 @testset "MySQLite.get_conn" begin
     MySQLite.get_conn() do conn

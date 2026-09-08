@@ -3,19 +3,20 @@ using SQLite
 
 
 """
-    get_conn(dbs::String = ":memory:", mode::String = "default") -> SQLite.DB
+    get_conn(f::Function, db_path::String = ":memory:", mode::String = "default")
 """
-function get_conn(dbs::String = ":memory:", mode::String = "default")::SQLite.DB
-    if dbs == ":memory:"
-        return SQLite.DB()
-    end
-    path = joinpath("data", "$dbs.sqlite")
-    if ispath(path)
-        uri = "file:$path?mode=$mode"
-        return SQLite.DB(uri)
+function get_conn(f::Function, db_path::String = ":memory:", mode::String = "default")
+    if db_path == ":memory:"
+        db = SQLite.DB()
     else
-        uri = "file:$path"
-        return SQLite.DB(uri)
+        path = joinpath("data", "$db_path.sqlite")
+        uri = ispath(path) ? "file:$path?mode=$mode" : "file:$path"
+        db = SQLite.DB(uri)
+    end
+    try
+        return f(db)
+    finally
+        SQLite.close(db)
     end
 end
 end # module MySQLite
