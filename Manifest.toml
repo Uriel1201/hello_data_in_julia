@@ -2,7 +2,7 @@
 
 julia_version = "1.12.6"
 manifest_format = "2.0"
-project_hash = "ac63e75a183632c4ded1706268003d6456b90eba"
+project_hash = "227c266781bfe713d9ff5f5c6daa87888869c196"
 
 [[deps.Artifacts]]
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
@@ -221,7 +221,7 @@ uuid = "c4b69c83-5512-53e3-94e6-de98773c479f"
 version = "1.4.2+0"
 
 [[deps.hello_data_in_julia]]
-deps = ["DotEnv", "SQLite"]
+deps = ["DotEnv", "JuliaFormatter", "SQLite"]
 path = "."
 uuid = "56430cd4-5d74-40e3-afde-876237f06769"
 version = "0.1.0"

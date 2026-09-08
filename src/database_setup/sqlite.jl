@@ -18,3 +18,16 @@ function get_conn(dbs::String = ":memory:", mode::String = "default")::SQLite.DB
     end
 end
 end # module MySQLite
+
+
+using .MySQLite, SQLite, DBInterface
+if abspath(PROGRAM_FILE) == @__FILE__
+    conn = MySQLite.get_conn()
+    query = """SELECT 'HELLO, WORLD!'"""
+    stmt = SQLite.Stmt(conn, query)
+    result = DBInterface.execute(stmt)
+    for row in result
+        println(row)
+    end
+    SQLite.close(conn)
+end

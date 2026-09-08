@@ -4,11 +4,13 @@ version = "0.1.0"
 authors = ["Unknown "]
 
 [deps]
+DBInterface = "a10d1c49-ce27-4219-8d33-6db1a4562965"
 DotEnv = "4dc1fcf4-5e3b-5448-94ab-0c38ec0385c1"
 JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
 SQLite = "0aa819cd-b072-5ff4-a722-6bc24af294d9"
 
 [compat]
+DBInterface = "2.7.0"
 DotEnv = "1.0.0"
 JuliaFormatter = "2.14.0"
 SQLite = "1.8.2"
