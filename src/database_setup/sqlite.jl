@@ -1,6 +1,6 @@
 module MySQLite
 
-using SQLite, Arrow, DBInterface, Tables
+using SQLite, Arrow, DBInterface, Tables, DataFrames
 
 
 """
@@ -23,13 +23,9 @@ end
 
 
 """
-    sqlite_ti_arrow(conn::SQLite.DB, query::String, output_file::String)
+    sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)
 """
-function sqlite_to_arrow(
-    conn::SQLite.DB,
-    query::String,
-    output_file::String,
-)::Nothing
+function sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)::Nothing
 
     file_path = joinpath("data/arrow", "$output_file.arrow")
 
@@ -56,6 +52,26 @@ function sqlite_to_arrow(
         end
     end
 
+    nothing
+end
+
+"""
+    sqlite_sample(conn::SQLite.DB, query::String) -> DataFrame
+"""
+function sqlite_sample(conn::SQLite.DB, query::String)::DataFrame
+    result = DBInterface.execute(conn, query)
+    batch = NamedTuple[]
+    for row in Iterators.take(result, 10)
+        push!(batch, NamedTuple(row))
+    end
+    return DataFrame(batch)
+end
+
+"""
+    print_sqlite(conn::SQLite.DB, query::String) -> Nothing 
+"""
+function print_sqlite(conn::SQLite.DB, query::String)::Nothing
+    show(sqlite_sample(conn, query))
     nothing
 end
 end # module MySQLite
