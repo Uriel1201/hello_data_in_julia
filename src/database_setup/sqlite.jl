@@ -55,6 +55,7 @@ function sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)::N
     nothing
 end
 
+
 """
     sqlite_sample(conn::SQLite.DB, query::String) -> DataFrame
 """
@@ -66,6 +67,7 @@ function sqlite_sample(conn::SQLite.DB, query::String)::DataFrame
     end
     return DataFrame(batch)
 end
+
 
 """
     print_sqlite(conn::SQLite.DB, query::String) -> Nothing 
