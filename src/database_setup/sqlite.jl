@@ -47,7 +47,7 @@ function sqlite_to_arrow(
                 table = Tables.table(batch)
                 Arrow.write(writer, table)
 
-                empty!(batch)
+                batch = NamedTuple[]
             end
         end
 
