@@ -1,5 +1,6 @@
 module MySQLite
-using SQLite
+
+using SQLite, Arrow, DBInterface, Tables
 
 
 """
@@ -34,7 +35,8 @@ function sqlite_to_arrow(
     result = DBInterface.execute(conn, query)
     open(Arrow.Writer, file_path) do writer
         for chunk in Iterators.partition(result, chunk_size)
-            Arrow.write(writer, collect(chunk))
+            println(typeof(chunk))
+            println(chunk)
         end
     end
 end
