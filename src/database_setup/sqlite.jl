@@ -52,7 +52,7 @@ function sqlite_to_arrow(
         end
 
         if !isempty(batch)
-            table = Tables.table(batch)
+            table = Tables.columntable(batch)
             Arrow.write(writer, table)
         end
     end
