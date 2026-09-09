@@ -79,11 +79,10 @@ end
 
 
 """
-    isavailable(conn::SQLite.DB, table::String) -> Bool 
+    my_tables(conn::SQLite.DB) -> Vector{String}
 """
-function isavailable(conn::SQLite.DB, table::String)::Bool
+function my_tables(conn::SQLite.DB)::String
     list_tables = collect(SQLite.tables(conn))
-    names = [t.name for t in list_tables]
-    return table in names
+    return [t.name for t in list_tables]
 end
 end # module MySQLite
