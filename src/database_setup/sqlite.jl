@@ -78,11 +78,6 @@ function print_sqlite(conn::SQLite.DB, query::String)::Nothing
 end
 
 
-
-
-
-
-
 """
     my_tables(conn::SQLite.DB) -> Vector{String}
 """
