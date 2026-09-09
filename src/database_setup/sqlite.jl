@@ -44,7 +44,7 @@ function sqlite_to_arrow(
             push!(batch, NamedTuple(row))
 
             if length(batch) == chunk_size
-                table = Tables.table(batch)
+                table = Tables.columntable(batch)
                 Arrow.write(writer, table)
 
                 batch = NamedTuple[]
