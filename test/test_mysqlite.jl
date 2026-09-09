@@ -17,7 +17,7 @@ end # testset
         DBInterface.execute(conn, "CREATE TABLE t (id INTEGER, name TEXT)")
         DBInterface.execute(conn, "INSERT INTO t VALUES (1,'a'), (2,'b'), (3,'c'), (4,'d'), (5,'e')")
 
-        MySQLite.sqlite_to_arrow(conn, "SELECT * FROM t", "test_output", 2)
+        MySQLite.sqlite_to_arrow(conn, "SELECT * FROM t", "test_output")
 
         @test isfile("data/arrow/test_output.arrow")
 

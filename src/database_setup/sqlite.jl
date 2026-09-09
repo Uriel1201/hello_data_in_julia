@@ -23,14 +23,9 @@ end
 
 
 """
-    sqlite_ti_arrow(conn::SQLite.DB, query::String, output_file::String, chunk_size::Int64)
+    sqlite_ti_arrow(conn::SQLite.DB, query::String, output_file::String)
 """
-function sqlite_to_arrow(
-    conn::SQLite.DB,
-    query::String,
-    output_file::String,
-    chunk_size::Int64,
-)::Nothing
+function sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)::Nothing
 
     file_path = joinpath("data/arrow", "$output_file.arrow")
 
@@ -43,7 +38,7 @@ function sqlite_to_arrow(
         for row in result
             push!(batch, NamedTuple(row))
 
-            if length(batch) == chunk_size
+            if length(batch) == 2
                 table = Tables.columntable(batch)
                 Arrow.write(writer, table)
 
