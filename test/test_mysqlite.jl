@@ -2,6 +2,8 @@ using Test
 include("../src/database_setup/sqlite.jl")
 using .MySQLite, DBInterface, SQLite, Arrow, Tables, DataFrames
 
+sql = "SELECT * FROM t"
+
 @testset "MySQLite.get_conn" begin
     MySQLite.get_conn() do conn
         @test conn isa SQLite.DB
@@ -15,12 +17,9 @@ end # testset
 @testset "MySQLite.sqlite_to_arrow" begin
     MySQLite.get_conn() do conn
         DBInterface.execute(conn, "CREATE TABLE t (id INTEGER, name TEXT)")
-        DBInterface.execute(
-            conn,
-            "INSERT INTO t VALUES (1,'a'), (2,'b'), (3,'c'), (4,'d'), (5,'e')",
-        )
+        DBInterface.execute(conn, "INSERT INTO t VALUES (1,'a'), (2,'b'), (3,'c'), (4,'d'), (5,'e')")
 
-        MySQLite.sqlite_to_arrow(conn, "SELECT * FROM t", "test_output")
+        MySQLite.sqlite_to_arrow(conn, sql, "test_output")
 
         @test isfile("data/arrow/test_output.arrow")
 
@@ -30,18 +29,18 @@ end # testset
         @test collect(tbl.name) == ["a", "b", "c", "d", "e"]
     end
 
-    rm("data/arrow/test_output.arrow"; force = true)
+    rm("data/arrow/test_output.arrow"; force=true)
 end # testset
 
 @testset "MySQLite.sqlite_sample" begin
     MySQLite.get_conn() do conn
         DBInterface.execute(conn, "CREATE TABLE t (id INTEGER, name TEXT)")
-        DBInterface.execute(
-            conn,
-            "INSERT INTO t VALUES (1,'a'), (2,'b'), (3,'c'), (4,'d'), (5,'e')",
-        )
+        DBInterface.execute(conn, "INSERT INTO t VALUES (1,'a'), (2,'b'), (3,'c'), (4,'d'), (5,'e')")
+        MySQLite.print_sqlite(conn, sql)
+        my_tables = MySQLite.my_tables(conn)
+        @test "t" in my_tables
 
-        df = MySQLite.sqlite_sample(conn, "SELECT * FROM t")
+        df = MySQLite.sqlite_sample(conn, sql)
         @test df isa DataFrame
         @test nrow(df) == 5
         @test names(df) == ["id", "name"]

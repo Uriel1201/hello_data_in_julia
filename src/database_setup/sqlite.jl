@@ -78,10 +78,15 @@ function print_sqlite(conn::SQLite.DB, query::String)::Nothing
 end
 
 
+
+
+
+
+
 """
     my_tables(conn::SQLite.DB) -> Vector{String}
 """
-function my_tables(conn::SQLite.DB)::String
+function my_tables(conn::SQLite.DB)::Vector{String}
     list_tables = collect(SQLite.tables(conn))
     return [t.name for t in list_tables]
 end
