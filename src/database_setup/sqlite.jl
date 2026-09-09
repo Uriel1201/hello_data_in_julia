@@ -31,13 +31,32 @@ function sqlite_to_arrow(
     output_file::String,
     chunk_size::Int64,
 )::Nothing
+
     file_path = joinpath("data/arrow", "$output_file.arrow")
+
     result = DBInterface.execute(conn, query)
+
     open(Arrow.Writer, file_path) do writer
-        for chunk in Iterators.partition(result, chunk_size)
-            println(typeof(chunk))
-            println(chunk)
+
+        batch = NamedTuple[]
+
+        for row in result
+            push!(batch, NamedTuple(row))
+
+            if length(batch) == chunk_size
+                table = Tables.table(batch)
+                Arrow.write(writer, table)
+
+                empty!(batch)
+            end
+        end
+
+        if !isempty(batch)
+            table = Tables.table(batch)
+            Arrow.write(writer, table)
         end
     end
+
+    nothing
 end
 end # module MySQLite
