@@ -1,7 +1,7 @@
 name = "hello_data_in_julia"
 uuid = "56430cd4-5d74-40e3-afde-876237f06769"
 version = "0.1.0"
-authors = ["Unknown "]
+authors = ["Uriel1201 <dante.1201mgie@gmail.com>"]
 
 [deps]
 Arrow = "69666777-d1a9-59fb-9406-91d4454c9d45"
