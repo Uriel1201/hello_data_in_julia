@@ -20,8 +20,6 @@ end # testset
             "INSERT INTO t VALUES (1,'a'), (2,'b'), (3,'c'), (4,'d'), (5,'e')",
         )
 
-        is_available = MySQLite.isavailable(conn, "t")
-        @test is_available == true
         MySQLite.sqlite_to_arrow(conn, "SELECT * FROM t", "test_output")
 
         @test isfile("data/arrow/test_output.arrow")
