@@ -25,11 +25,7 @@ end
 """
     sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)
 """
-function sqlite_to_arrow(
-    conn::SQLite.DB,
-    query::String,
-    output_file::String,
-)::Nothing
+function sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)::Nothing
 
     file_path = joinpath("data/arrow", "$output_file.arrow")
 
@@ -74,8 +70,18 @@ end
 """
     print_sqlite(conn::SQLite.DB, query::String) -> Nothing 
 """
-function print_sqlite(conn::SQLite.DB, query::String)::Nothing 
+function print_sqlite(conn::SQLite.DB, query::String)::Nothing
     show(sqlite_sample(conn, query))
     nothing
+end
+
+
+"""
+    isavailable(conn::SQLite.DB, table::String) -> Bool 
+"""
+function isavailable(conn::SQLite.DB, table::String)::Bool
+    list_tables = collect(SQLite.tables(conn))
+    names = [t.name for t in list_tables]
+    return table in names
 end
 end # module MySQLite
