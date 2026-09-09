@@ -25,7 +25,11 @@ end
 """
     sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)
 """
-function sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)::Nothing
+function sqlite_to_arrow(
+    conn::SQLite.DB,
+    query::String,
+    output_file::String,
+)::Nothing
 
     file_path = joinpath("data/arrow", "$output_file.arrow")
 
@@ -38,7 +42,7 @@ function sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)::N
         for row in result
             push!(batch, NamedTuple(row))
 
-            if length(batch) == 5
+            if length(batch) == 10000
                 table = Tables.columntable(batch)
                 Arrow.write(writer, table)
 
@@ -61,7 +65,7 @@ end
 function sqlite_sample(conn::SQLite.DB, query::String)::DataFrame
     result = DBInterface.execute(conn, query)
     batch = NamedTuple[]
-    for row in Iterators.take(result, 10)
+    for row in Iterators.take(result, 100)
         push!(batch, NamedTuple(row))
     end
     return DataFrame(batch)
@@ -70,7 +74,7 @@ end
 """
     print_sqlite(conn::SQLite.DB, query::String) -> Nothing 
 """
-function print_sqlite(conn::SQLite.DB, query::String)::Nothing
+function print_sqlite(conn::SQLite.DB, query::String)::Nothing 
     show(sqlite_sample(conn, query))
     nothing
 end
