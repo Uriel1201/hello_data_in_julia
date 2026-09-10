@@ -40,10 +40,7 @@ function ingest_data(conn::SQLite.DB, my_table::MyTable, data::Vector{<:Tuple}):
     list_table = dbs.my_tables(conn)
     if (my_table.name in list_table)
         n = length(first(data))
-        placeholders = join(
-            ["(" * join(fill("?", n), ", ") * ")" for _ in data],
-            ", "
-        )
+        placeholders = join(["(" * join(fill("?", n), ", ") * ")" for _ in data], ", ")
 
         query = "INSERT INTO $(my_table.name) $(my_table.stmt_columns) VALUES $placeholders"
         stmt = SQLite.Stmt(conn, query)
@@ -53,6 +50,6 @@ function ingest_data(conn::SQLite.DB, my_table::MyTable, data::Vector{<:Tuple}):
     else
         error("$my_table.name does not exist")
     end
-    nothing 
+    nothing
 end # ingest_data
 end # module MyTables
