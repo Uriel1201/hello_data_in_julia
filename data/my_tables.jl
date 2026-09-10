@@ -1,6 +1,7 @@
 module MyTables
 
 using DBInterface, SQLite, Tables
+import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
 
 struct MyTable
     name::String
@@ -19,7 +20,7 @@ end
 """
 """
 function create_table(conn::SQLite.DB, table_name::String, schema::Tables.Schema)::MyTable
-    list_table = MySQLite.my_tables(conn)
+    list_table = dbs.my_tables(conn)
     if !(table_name in list_table)
         SQLite.createtable!(conn, table_name, schema, temp = false)
 
@@ -35,11 +36,14 @@ end # create_table
 
 """
 """
-function ingest_data(conn::SQLite.DB, my_table::MyTable, data::Vector{Tuple})::Nothing
-    list_table = MySQLite.my_tables(conn)
+function ingest_data(conn::SQLite.DB, my_table::MyTable, data::Vector{<:Tuple})::Nothing
+    list_table = dbs.my_tables(conn)
     if (my_table.name in list_table)
         n = length(first(data))
-        placeholders = join(["(" * join(fill("?", n), ", ") * ")" for _ in data], ", ")
+        placeholders = join(
+            ["(" * join(fill("?", n), ", ") * ")" for _ in data],
+            ", "
+        )
 
         query = "INSERT INTO $(my_table.name) $(my_table.stmt_columns) VALUES $placeholders"
         stmt = SQLite.Stmt(conn, query)
@@ -49,5 +53,6 @@ function ingest_data(conn::SQLite.DB, my_table::MyTable, data::Vector{Tuple})::N
     else
         error("$my_table.name does not exist")
     end
+    nothing 
 end # ingest_data
 end # module MyTables
