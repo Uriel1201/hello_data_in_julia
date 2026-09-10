@@ -1,32 +1,53 @@
 module MyTables
+
 using DBInterface, SQLite, Tables
 
-"""
-"""
-function create_users_01(conn::SQLite.DB, list_table::Vector{String})::Nothing
+struct MyTable
+    name::String
+    stmt_columns::String
+end
 
-    if !("users_01" in list_table)
-        schema = Tables.Schema((:user_id, :action, :dates), (Int32, String, String))
-        SQLite.createtable!(conn, "users_01", schema, temp = false)
+
+"""
+"""
+function get_my_table(table_name::String, schema::Tables.Schema)::MyTable
+    columns = "(" * join([String(column) for column in schema.names], ", ") * ")"
+    return MyTable(table_name, columns)
+end
+
+
+"""
+"""
+function create_table(conn::SQLite.DB, table_name::String, schema::Tables.Schema)::MyTable
+    list_table = MySQLite.my_tables(conn)
+    if !(table_name in list_table)
+        SQLite.createtable!(conn, table_name, schema, temp = false)
 
         columns = join(schema.names, " | ")
         _type = join(schema.types, " | ")
-        @info "users_01 created:" columns _type
+        @info "$table_name created: " columns _type
     else
-        @info "users_01 already exists"
+        @info "$table_name already exists"
     end
-    nothing
-end # create_users_01
+    return get_my_table(table_name, schema)
+end # create_table
 
 
 """
 """
-function users_01_ingest(conn::SQLite.DB, data::Vector{Tuple{Int64, String, String}})::Nothing
-    placeholders = join(["(?, ?, ?)" for _ in data], ", ")
-    query = "INSERT INTO USERS_01 (USER_ID, ACTION, DATES) VALUES $placeholders"
-    stmt = SQLite.Stmt(conn, query)
-    params = collect(Iterators.flatten(data))
-    DBInterface.execute(stmt, params)
-    @info "$data ingested"
-end # users_01_ingest
+function ingest_data(conn::SQLite.DB, my_table::MyTable, data::Vector{Tuple})::Nothing
+    list_table = MySQLite.my_tables(conn)
+    if (my_table.name in list_table)
+        n = length(first(data))
+        placeholders = join(["(" * join(fill("?", n), ", ") * ")" for _ in data], ", ")
+
+        query = "INSERT INTO $(my_table.name) $(my_table.stmt_columns) VALUES $placeholders"
+        stmt = SQLite.Stmt(conn, query)
+        params = collect(Iterators.flatten(data))
+        DBInterface.execute(stmt, params)
+        @info "$data ingested"
+    else
+        error("$my_table.name does not exist")
+    end
+end # ingest_data
 end # module MyTables
