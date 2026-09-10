@@ -14,7 +14,7 @@ data = [(1, "dog", "Margarita"), (2, "cat", "Michi"), (3, "bird", "Pantaleon")]
         @test my_table.stmt_columns == "(id, animal, name)"
         @test ("family" in dbs.my_tables(conn))
         MyTables.ingest_data(conn, my_table, data)
-        result = DBInterface.execute(conn, "SELECT name FROM family where animal = 'dog'")
+        result = DBInterface.execute(conn, "SELECT name FROM family WHERE animal = 'dog'")
         row = first(result)
         @test row.name == "Margarita"
     end
