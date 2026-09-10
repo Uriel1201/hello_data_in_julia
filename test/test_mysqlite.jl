@@ -36,7 +36,6 @@ end # testset
     MySQLite.get_conn() do conn
         DBInterface.execute(conn, "CREATE TABLE t (id INTEGER, name TEXT)")
         DBInterface.execute(conn, "INSERT INTO t VALUES (1,'a'), (2,'b'), (3,'c'), (4,'d'), (5,'e')")
-        MySQLite.print_sqlite(conn, sql)
         my_tables = MySQLite.my_tables(conn)
         @test "t" in my_tables
 
