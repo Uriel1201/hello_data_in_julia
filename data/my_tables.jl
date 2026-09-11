@@ -36,7 +36,7 @@ end # create_table
 
 """
 """
-function ingest_data(conn::SQLite.DB, my_table::MyTable, data::Vector{<:Tuple})::Nothing
+function ingest_data(conn::SQLite.DB, my_table::MyTable, data)::Nothing
     list_table = dbs.my_tables(conn)
     if (my_table.name in list_table)
         n = length(first(data))
@@ -46,7 +46,7 @@ function ingest_data(conn::SQLite.DB, my_table::MyTable, data::Vector{<:Tuple}):
         stmt = SQLite.Stmt(conn, query)
         params = collect(Iterators.flatten(data))
         DBInterface.execute(stmt, params)
-        @info "$data ingested"
+        @info "ingestion completed"
     else
         error("$my_table.name does not exist")
     end
