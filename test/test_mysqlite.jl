@@ -57,18 +57,18 @@ end # testset
 
 
 @testset "MySQLite.create_table" begin
-    dbs.get_conn() do conn
+    MySQLite.get_conn() do conn
         @test !("family" in MySQLite.my_tables(conn))
 
         my_table = MySQLite.create_table(conn, "family", schema1)
         @test my_table.name == "family"
         @test my_table.stmt_columns == "(id, animal, name)"
-        @test ("family" in dbs.my_tables(conn))
+        @test ("family" in MySQLite.my_tables(conn))
 
         tbl = MySQLite.create_table(conn, "users", schema)
         @test tbl.name == "users"
         @test tbl.stmt_columns == "(USER_ID, ACTION, DATES)"
-        @test ("users" in dbs.my_tables(conn))
+        @test ("users" in MySQLite.my_tables(conn))
 
         MySQLite.ingest_data(conn, my_table, data)
         result = DBInterface.execute(conn, "SELECT name FROM family WHERE animal = 'dog'")
