@@ -88,7 +88,7 @@ function my_tables(conn::SQLite.DB)::Vector{String}
     return [t.name for t in list_tables]
 end # my_tables
 
-
+#=
 """
     ingest_data(conn::SQLite.DB, my_table::MyTable, data) -> Nothing 
 """
@@ -102,5 +102,5 @@ function ingest_data(conn::SQLite.DB, my_table::MyTable, data)::Nothing
     DBInterface.execute(stmt, params)
     @info "ingestion completed"
     nothing
-end # ingest_data
+end # ingest_data=#
 end # module MySQLite
