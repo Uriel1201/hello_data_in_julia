@@ -1,14 +1,18 @@
-using Tables, SQLite, CSV
+using Tables, SQLite
 import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
 
 
-const TABLE_LIST = dbs.get_conn() do conn
+const TABLE_LIST = dbs.get_conn("hello_data", "ro") do conn
     dbs.my_tables(conn)
 end
 
 
-function create_01_users(conn::SQLite.DB, schema::Tables.Schema)::dbs.MyTable
+function create_01_users(conn::SQLite.DB)::dbs.MyTable
     t = "users_01"
+    schema = Tables.Schema(
+        (:user_id, :action, :action_date),
+        (Int64, Union{String,Nothing}, Union{String,Nothing}),
+    )
     if !(t in TABLE_LIST)
         return dbs.create_table(conn, t, schema)
     else
@@ -18,8 +22,12 @@ function create_01_users(conn::SQLite.DB, schema::Tables.Schema)::dbs.MyTable
 end
 
 
-function create_02_transactions(conn::SQLite.DB, schema::Tables.Schema)::dbs.MyTable
+function create_02_transactions(conn::SQLite.DB)::dbs.MyTable
     t = "02_transactions"
+    schema = Tables.Schema(
+        (:sender, :receiver, :amount, :transaction_date),
+        (Int64, Union{Int64,Nothing}, Union{Float64,Nothing}, Union{String,Nothing}),
+    )
     if !(t in TABLE_LIST)
         return dbs.create_table(conn, t, schema)
     else
@@ -29,8 +37,9 @@ function create_02_transactions(conn::SQLite.DB, schema::Tables.Schema)::dbs.MyT
 end
 
 
-function create_03_items(conn::SQLite.DB, schema::Tables.Schema)::dbs.MyTable
+function create_03_items(conn::SQLite.DB)::dbs.MyTable
     t = "03_items"
+    schema = Tables.Schema((:date, :item), (String, Union{String,Nothing}))
     if !(t in TABLE_LIST)
         return dbs.create_table(conn, t, schema)
     else
@@ -40,8 +49,12 @@ function create_03_items(conn::SQLite.DB, schema::Tables.Schema)::dbs.MyTable
 end
 
 
-function create_04_users(conn::SQLite.DB, schema::Tables.Schema)::dbs.MyTable
+function create_04_users(conn::SQLite.DB)::dbs.MyTable
     t = "04_users"
+    schema = Tables.Schema(
+        (:id, :action, :action_date),
+        (Int64, Union{String,Nothing}, Union{String,Nothing}),
+    )
     if !(t in TABLE_LIST)
         return dbs.create_table(conn, t, schema)
     else
@@ -51,8 +64,10 @@ function create_04_users(conn::SQLite.DB, schema::Tables.Schema)::dbs.MyTable
 end
 
 
-function create_05_users(conn::SQLite.DB, schema::Tables.Schema)::dbs.MyTable
+function create_05_users(conn::SQLite.DB)::dbs.MyTable
     t = "05_users"
+    schema =
+        Tables.Schema((:user_id, :product_id, :transaction_date), (Int64, Int64, String))
     if !(t in TABLE_LIST)
         return dbs.create_table(conn, t, schema)
     else
@@ -62,26 +77,24 @@ function create_05_users(conn::SQLite.DB, schema::Tables.Schema)::dbs.MyTable
 end
 
 
-function main() 
-    dbs.get_conn() do conn
+function main()
+    dbs.get_conn("hello_data", "rw") do conn
         println("uri: $conn connected")
 
-        file_01 = "data/csv/01"
-        path_01 = joinpath.(file_01, filter(f -> endswith(f, ".csv"), readdir(file_01)))
-        csv_01 = CSV.File(path_01)
-        schema_01 = Tables.Schema((:user_id, :action, :action_date), Tables.schema(csv_01).types)
-        users_01 = create_01_users(conn, schema_01)
-        dbs.ingest_data(conn, users_01, csv_01)
+        tables = dbs.MyTable[]
+        push!(tables, create_01_users(conn))
+        push!(tables, create_02_transactions(conn))
+        push!(tables, create_03_items(conn))
+        push!(tables, create_04_users(conn))
+        push!(tables, create_05_users(conn))
 
-        #_02 = create_02_transactions(conn)
-        #_03 = create_03_items(conn)
-        #_05 = create_04_users(conn)
-        #_06 = create_05_users(conn)
+        for table in tables
+            println("table:$(table.name), columns: $(table.stmt_columns)")
+        end
     end
 end
 
 
-if Base.@isdefined(PROGRAM_FILE) &&
-   abspath(PROGRAM_FILE) == abspath(@__FILE__)
+if Base.@isdefined(PROGRAM_FILE) && abspath(PROGRAM_FILE) == abspath(@__FILE__)
     main()
 end
