@@ -6,7 +6,7 @@ const TABLE_LIST = dbs.get_conn("hello_data", "ro") do conn
     dbs.my_tables(conn)
 end
 
-
+#=
 function create_01_users(conn::SQLite.DB)::dbs.MyTable
     t = "users_01"
     schema = Tables.Schema(
@@ -98,3 +98,4 @@ end
 if Base.@isdefined(PROGRAM_FILE) && abspath(PROGRAM_FILE) == abspath(@__FILE__)
     main()
 end
+=#
