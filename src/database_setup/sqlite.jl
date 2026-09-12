@@ -88,19 +88,4 @@ function my_tables(conn::SQLite.DB)::Vector{String}
     return [t.name for t in list_tables]
 end # my_tables
 
-#=
-"""
-    ingest_data(conn::SQLite.DB, my_table::MyTable, data) -> Nothing 
-"""
-function ingest_data(conn::SQLite.DB, my_table::MyTable, data)::Nothing
-    n = length(first(data))
-    placeholders = join(["(" * join(fill("?", n), ", ") * ")" for _ in data], ", ")
-    
-    query = "INSERT INTO $(my_table.name) $(my_table.stmt_columns) VALUES $placeholders"
-    stmt = SQLite.Stmt(conn, query)
-    params = collect(Iterators.flatten(data))
-    DBInterface.execute(stmt, params)
-    @info "ingestion completed"
-    nothing
-end # ingest_data=#
 end # module MySQLite
