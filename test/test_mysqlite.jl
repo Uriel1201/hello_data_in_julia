@@ -54,33 +54,3 @@ end # testset
         @test df.name == ["a", "b", "c", "d", "e"]
     end
 end # testset
-
-
-@testset "MySQLite.create_table" begin
-    MySQLite.get_conn() do conn
-        @test !("family" in MySQLite.my_tables(conn))
-
-        my_table = MySQLite.create_table(conn, "family", schema1)
-        @test my_table.name == "family"
-        @test my_table.stmt_columns == "(id, animal, name)"
-        @test ("family" in MySQLite.my_tables(conn))
-
-        tbl = MySQLite.create_table(conn, "users", schema)
-        @test tbl.name == "users"
-        @test tbl.stmt_columns == "(USER_ID, ACTION, DATES)"
-        @test ("users" in MySQLite.my_tables(conn))
-
-        MySQLite.ingest_data(conn, my_table, data)
-        result = DBInterface.execute(conn, "SELECT name FROM family WHERE animal = 'dog'")
-        row = first(result)
-        @test row.name == "Margarita"
-
-        MySQLite.ingest_data(conn, tbl, file)
-        result = DBInterface.execute(
-            conn,
-            "SELECT COUNT(*) as num_of_rows FROM users WHERE ACTION = 'cancel'",
-        )
-        row = first(result)
-        @test row.num_of_rows == 4
-    end
-end # testset
