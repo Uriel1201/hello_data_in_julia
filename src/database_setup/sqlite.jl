@@ -3,23 +3,19 @@ module MySQLite
 using SQLite, Arrow, DBInterface, Tables, DataFrames
 
 
-struct MyTable
-    name::String
-    stmt_columns::String
-end
-
-
 """
-    get_conn(f::Function, db_path::String = ":memory:", mode::String = "default")
+    get_conn(f::Function, db_path::String = ":memory:", mode::String = "rw")
 """
-function get_conn(f::Function, db_path::String = ":memory:", mode::String = "default")
+function get_conn(f::Function, db_path::String = ":memory:", mode::String = "rw")
     if db_path == ":memory:"
+        uri = "file::memory:?cache=shared"
         db = SQLite.DB()
     else
         path = joinpath("data", "$db_path.sqlite")
         uri = ispath(path) ? "file:$path?mode=$mode" : "file:$path"
         db = SQLite.DB(uri)
     end
+    @info "URI: $uri connected"
     try
         return f(db)
     finally
@@ -91,29 +87,6 @@ function my_tables(conn::SQLite.DB)::Vector{String}
     list_tables = collect(SQLite.tables(conn))
     return [t.name for t in list_tables]
 end # my_tables
-
-
-"""
-    mytable(table_name::String, schema::Tables.Schema) -> MyTable
-"""
-function mytable(table_name::String, schema::Tables.Schema)::MyTable
-    columns = "(" * join([String(column) for column in schema.names], ", ") * ")"
-    return MyTable(table_name, columns)
-end # mytable
-
-
-"""
-    create_table(conn::SQLite.DB, table_name::String, schema::Tables.Schema) -> MyTable
-"""
-function create_table(conn::SQLite.DB, table_name::String, schema::Tables.Schema)::MyTable
-    SQLite.createtable!(conn, table_name, schema, temp = false)
-    
-    columns = join(schema.names, " | ")
-    _type = join(schema.types, " | ")
-    @info "$table_name created: " columns _type
-
-    return mytable(table_name, schema)
-end # create_table
 
 
 """
